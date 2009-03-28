@@ -1,0 +1,59 @@
+NAME
+  testy.rb
+
+DESCRIPTION
+  a BDD testing framework for ruby that's mad at the world and plans to kick
+  it's ass in 78 freakin lines of code
+
+SYNOPSIS
+  Testy.testing 'your code' do
+    test 'some behaviour' do |result|
+      ultimate = Ultimate.new
+
+      result.check :name, :expect => 42, :actual => ultimate.answer
+    end
+  end
+
+PRINCIPLES AND GOALS
+  . it.should.not.merely.be.a.unit.testing.with.a.clever.dsl
+
+  . testing should not require learning a framework.  ruby is a great
+  framework so testy uses it instead, requiring programmers learn exactly 2
+  new method calls
+
+  . testing loc should not dwarf those of the application
+
+  . testing framework loc should not dwarf those of the application
+
+  . testing frameworks should *never* alter ruby built-ins nor add methods to
+  Object, Kernel, .et al
+
+  . the output of tests should be machine parsable for reporting and ci tools
+  to easily integrate with
+
+  . the output of tests should be beautiful so that humans can read it
+
+  . the shape of the test file should not insult the programmer so that tests
+  can double as sample code
+
+  . the testing framework should never alter exception semantics
+
+  . hi-jacking at_exit sucks ass
+
+  . the exit status of running a test suite should indicate the degree of it's
+  failure state: the more failures the higher the exit status
+
+  . sample code should easily be able to double as a test suite, including
+  it's output
+
+  . testing should improve your code and help your users, not make you want to
+  kill yourself
+
+  . using a format that aligns in terminal is sanity saving when comparing
+  output
+
+  . testing frameworks should provide as few shortcuts for making brittle
+  tightly coupled tests as possible
+  
+SAMPLES
+  @samples

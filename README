@@ -1,0 +1,159 @@
+NAME
+  testy.rb
+
+DESCRIPTION
+  a BDD testing framework for ruby that's mad at the world and plans to kick
+  it's ass in 78 freakin lines of code
+
+SYNOPSIS
+  Testy.testing 'your code' do
+    test 'some behaviour' do |result|
+      ultimate = Ultimate.new
+
+      result.check :name, :expect => 42, :actual => ultimate.answer
+    end
+  end
+
+PRINCIPLES AND GOALS
+  . it.should.not.merely.be.a.unit.testing.with.a.clever.dsl
+
+  . testing should not require learning a framework.  ruby is a great
+  framework so testy uses it instead, requiring programmers learn exactly 2
+  new method calls
+
+  . testing loc should not dwarf those of the application
+
+  . testing framework loc should not dwarf those of the application
+
+  . testing frameworks should *never* alter ruby built-ins nor add methods to
+  Object, Kernel, .et al
+
+  . the output of tests should be machine parsable for reporting and ci tools
+  to easily integrate with
+
+  . the output of tests should be beautiful so that humans can read it
+
+  . the shape of the test file should not insult the programmer so that tests
+  can double as sample code
+
+  . the testing framework should never alter exception semantics
+
+  . hi-jacking at_exit sucks ass
+
+  . the exit status of running a test suite should indicate the degree of it's
+  failure state: the more failures the higher the exit status
+
+  . sample code should easily be able to double as a test suite, including
+  it's output
+
+  . testing should improve your code and help your users, not make you want to
+  kill yourself
+
+  . using a format that aligns in terminal is sanity saving when comparing
+  output
+
+  . testing frameworks should provide as few shortcuts for making brittle
+  tightly coupled tests as possible
+  
+SAMPLES
+
+  <========< samples/a.rb >========>
+
+  ~ > cat samples/a.rb
+
+    # simple use of testy involves simply writing code, and recording the result
+    # you expect against the actual result
+    #
+    # notice that the output is very pretty and that the exitstatus is 0 when all
+    # tests pass
+    #
+      require 'testy'
+    
+      Testy.testing 'the kick-ass-ed-ness of testy' do
+    
+        test 'the ultimate answer to life' do |result|
+          list = []
+    
+          list << 42
+          result.check :a, :expect => 42, :actual => list.first
+    
+          list << 42.0
+          result.check :b, 42.0, list.last
+        end
+    
+      end
+
+  ~ > ruby samples/a.rb #=> exitstatus=0
+
+    --- 
+    the kick-ass-ed-ness of testy: 
+      the ultimate answer to life: 
+        success: 
+          a: 42
+          b: 42.0
+
+
+  <========< samples/b.rb >========>
+
+  ~ > cat samples/b.rb
+
+    # testy will handle unexpected results and exceptions thrown in your code in
+    # exactly the same way - by reporting on them in a beautiful fashion and
+    # continuing to run other tests.  notice, however, that an unexpected result
+    # or raised exception will cause a non-zero exitstatus (equalling the number
+    # of failed tests) for the suite as a whole.  also note that previously
+    # accumulate expect/actual pairs are still reported on in the error report.
+    #
+      require 'testy'
+    
+      Testy.testing 'the exception handling of testy' do
+    
+        test 'raising an exception' do |result|
+          list = []
+    
+          list << 42
+          result.check :a, :expect => 42, :actual => list.first
+    
+          list.method_that_does_not_exist
+        end
+    
+        test 'returning unexpected results' do |result|
+          result.check 'a', 42, 42
+          result.check :b, :expect => 'forty-two', :actual => 42.0
+        end
+    
+      end
+
+  ~ > ruby samples/b.rb #=> exitstatus=2
+
+    --- 
+    the exception handling of testy: 
+      raising an exception: 
+        failure: 
+          error: 
+            class: NoMethodError
+            message: undefined method `method_that_does_not_exist' for [42]:Array
+            bactrace: 
+            - samples/b.rb:18
+            - ./lib/testy.rb:63:in `call'
+            - ./lib/testy.rb:63:in `run'
+            - /opt/local/lib/ruby/site_ruby/1.8/orderedhash.rb:65:in `each'
+            - /opt/local/lib/ruby/site_ruby/1.8/orderedhash.rb:65:in `each'
+            - ./lib/testy.rb:59:in `run'
+            - ./lib/testy.rb:87:in `testing'
+            - samples/b.rb:10
+          expect: 
+            a: 42
+          actual: 
+            a: 42
+      returning unexpected results: 
+        failure: 
+          expect: 
+            a: 42
+            b: forty-two
+          actual: 
+            a: 42
+            b: 42.0
+
+
+URI
