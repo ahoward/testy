@@ -3,6 +3,8 @@ require 'orderedhash'
 require 'yaml'
 
 module Testy
+  def Testy.version() '0.4.2' end
+
   class Test
     class BadResult < StandardError
     end
