@@ -72,7 +72,7 @@ module Testy
               error = OrderedHash.new
               error['class'] = e.class.name
               error['message'] = e.message.to_s
-              error['bactrace'] = e.backtrace||[]
+              error['backtrace'] = e.backtrace||[]
               failure['error'] = error
             end
             failure['expect'] = result.expect

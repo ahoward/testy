@@ -9,7 +9,6 @@ SYNOPSIS
   Testy.testing 'your code' do
     test 'some behaviour' do |result|
       ultimate = Ultimate.new
-
       result.check :name, :expect => 42, :actual => ultimate.answer
     end
   end
@@ -54,6 +53,10 @@ PRINCIPLES AND GOALS
 
   . testing frameworks should provide as few shortcuts for making brittle
   tightly coupled tests as possible
+
+  . test suites should be able to be created, manipulated, have their output
+  streamed to different ports, and even tested themselves - they should be
+  plain ol objects under the hood
   
 SAMPLES
   @samples

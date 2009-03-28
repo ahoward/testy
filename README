@@ -3,20 +3,15 @@ NAME
 
 DESCRIPTION
   a BDD testing framework for ruby that's mad at the world and plans to kick
-  it's ass in 78 freakin lines of code
+  it's ass in 80 freakin lines of code
 
 SYNOPSIS
   Testy.testing 'your code' do
     test 'some behaviour' do |result|
       ultimate = Ultimate.new
-
       result.check :name, :expect => 42, :actual => ultimate.answer
     end
   end
-
-GIT
-  http://github.com/ahoward/testy/tree/master
-  git://github.com/ahoward/testy.git
 
 PRINCIPLES AND GOALS
   . it.should.not.merely.be.a.unit.testing.with.a.clever.dsl
@@ -58,6 +53,10 @@ PRINCIPLES AND GOALS
 
   . testing frameworks should provide as few shortcuts for making brittle
   tightly coupled tests as possible
+
+  . test suites should be able to be created, manipulated, have their output
+  streamed to different ports, and even tested themselves - they should be
+  plain ol objects under the hood
   
 SAMPLES
 
@@ -137,14 +136,14 @@ SAMPLES
           error: 
             class: NoMethodError
             message: undefined method `method_that_does_not_exist' for [42]:Array
-            bactrace: 
+            backtrace: 
             - samples/b.rb:18
-            - ./lib/testy.rb:63:in `call'
-            - ./lib/testy.rb:63:in `run'
+            - ./lib/testy.rb:65:in `call'
+            - ./lib/testy.rb:65:in `run'
             - /opt/local/lib/ruby/site_ruby/1.8/orderedhash.rb:65:in `each'
             - /opt/local/lib/ruby/site_ruby/1.8/orderedhash.rb:65:in `each'
-            - ./lib/testy.rb:59:in `run'
-            - ./lib/testy.rb:87:in `testing'
+            - ./lib/testy.rb:61:in `run'
+            - ./lib/testy.rb:89:in `testing'
             - samples/b.rb:10
           expect: 
             a: 42
@@ -158,3 +157,4 @@ SAMPLES
           actual: 
             a: 42
             b: 42.0
+
