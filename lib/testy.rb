@@ -57,7 +57,7 @@ module Testy
     def run port = STDOUT
       instance_eval(&@block) if @block
       report = OrderedHash.new
-      status = 0
+      failures = 0
       tests.each do |name, block|
         result = Result.new
         report[name] =
@@ -66,7 +66,7 @@ module Testy
             raise BadResult, name unless result.ok?
             {'success' => result.actual}
           rescue Object => e
-            status += 1
+            failures += 1
             failure = OrderedHash.new
             unless e.is_a?(BadResult)
               error = OrderedHash.new
@@ -81,11 +81,12 @@ module Testy
           end
       end
       port << {name => report}.to_yaml
-      exit(status)
+      failures
     end
   end
     
   def Testy.testing(*args, &block)
-    Test.new(*args, &block).run
+    failures = Test.new(*args, &block).run
+    exit(failures)
   end
 end
