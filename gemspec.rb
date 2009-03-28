@@ -24,6 +24,7 @@ Gem::Specification::new do |spec|
   spec.require_path = "lib" 
 
   spec.has_rdoc = true
+  spec.add_dependency 'orderedhash'
 
   spec.author = "Ara T. Howard"
   spec.email = "ara.t.howard@gmail.com"
