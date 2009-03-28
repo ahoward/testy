@@ -64,7 +64,7 @@ module Testy
           begin
             block.call(result)
             raise BadResult, name unless result.ok?
-            {'success' => result.actual}
+            {'success' => result.actual.with_string_keys}
           rescue Object => e
             failures += 1
             failure = OrderedHash.new
@@ -75,8 +75,8 @@ module Testy
               error['backtrace'] = e.backtrace||[]
               failure['error'] = error
             end
-            failure['expect'] = result.expect
-            failure['actual'] = result.actual
+            failure['expect'] = result.expect.with_string_keys
+            failure['actual'] = result.actual.with_string_keys
             {'failure' => failure}
           end
       end
