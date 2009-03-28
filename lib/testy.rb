@@ -54,7 +54,7 @@ module Testy
       @tests[name.to_s] = block
     end
 
-    def run port = STDOUT
+    def run(port = '')
       instance_eval(&@block) if @block
       report = OrderedHash.new
       failures = 0
@@ -86,7 +86,7 @@ module Testy
   end
     
   def Testy.testing(*args, &block)
-    failures = Test.new(*args, &block).run
+    failures = Test.new(*args, &block).run(STDOUT)
     exit(failures)
   end
 end
