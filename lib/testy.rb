@@ -37,6 +37,10 @@ module Testy
       def ok?
         expect === actual
       end
+
+      def empty?
+        expect.empty? and actual.empty?
+      end
     end
 
     attr_accessor :name
@@ -71,9 +75,10 @@ module Testy
         result = Result.new
         report[name] =
           begin
-            block.call(result)
+            value = block.call(result)
             raise BadResult, name unless result.ok?
-            {'success' => result.actual.with_string_keys}
+            value = result.actual.with_string_keys unless result.empty?
+            {'success' => value}
           rescue Object => e
             failures += 1
             failure = OrderedHash.new
