@@ -54,6 +54,11 @@ module Testy
       @tests[name.to_s] = block
     end
 
+    def list
+      instance_eval(&@block) if @block
+      tests.map{|kv| kv.first.to_s}
+    end
+
     def run(*args)
       options = args.last.is_a?(Hash) ? args.pop : {}
       port = options[:port]||options['port']||STDOUT
@@ -90,8 +95,14 @@ module Testy
   end
     
   def Testy.testing(*args, &block)
+    list = ARGV.delete('--list')||ARGV.delete('-l')
     selectors = ARGV.map{|arg| eval(arg =~ %r|^/.*| ? arg : "/^#{ arg }/")}
-    failures = Test.new(*args, &block).run(:port => STDOUT, :selectors => selectors)
-    exit(failures)
+    test = Test.new(*args, &block)
+    if list
+      y test.list
+    else
+      failures = test.run(:selectors => selectors)
+      exit(failures)
+    end
   end
 end
