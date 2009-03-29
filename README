@@ -138,12 +138,12 @@ SAMPLES
             message: undefined method `method_that_does_not_exist' for [42]:Array
             backtrace: 
             - samples/b.rb:18
-            - ./lib/testy.rb:65:in `call'
-            - ./lib/testy.rb:65:in `run'
+            - ./lib/testy.rb:67:in `call'
+            - ./lib/testy.rb:67:in `run'
             - /opt/local/lib/ruby/site_ruby/1.8/orderedhash.rb:65:in `each'
             - /opt/local/lib/ruby/site_ruby/1.8/orderedhash.rb:65:in `each'
-            - ./lib/testy.rb:61:in `run'
-            - ./lib/testy.rb:89:in `testing'
+            - ./lib/testy.rb:63:in `run'
+            - ./lib/testy.rb:91:in `testing'
             - samples/b.rb:10
           expect: 
             a: 42

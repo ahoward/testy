@@ -54,11 +54,15 @@ module Testy
       @tests[name.to_s] = block
     end
 
-    def run(port = '')
+    def run(*args)
+      options = args.last.is_a?(Hash) ? args.pop : {}
+      port = options[:port]||options['port']||STDOUT
+      selectors = options[:selectors]||options['selectors']||[]
       instance_eval(&@block) if @block
       report = OrderedHash.new
       failures = 0
       tests.each do |name, block|
+        next unless selectors.any?{|selector| selector===name} unless selectors.empty?
         result = Result.new
         report[name] =
           begin
@@ -86,7 +90,8 @@ module Testy
   end
     
   def Testy.testing(*args, &block)
-    failures = Test.new(*args, &block).run(STDOUT)
+    selectors = ARGV.map{|arg| eval(arg =~ %r|^/.*| ? arg : "/^#{ arg }/")}
+    failures = Test.new(*args, &block).run(:port => STDOUT, :selectors => selectors)
     exit(failures)
   end
 end
