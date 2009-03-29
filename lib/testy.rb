@@ -35,7 +35,7 @@ module Testy
       end
 
       def ok?
-        expect == actual
+        expect === actual
       end
     end
 
