@@ -2,16 +2,21 @@ NAME
   testy.rb
 
 DESCRIPTION
-  a BDD testing framework for ruby that's mad at the world and plans to kick
-  it's ass in 80 freakin lines of code
+  a minimalist BDD testing framework for ruby that's mad at the world and
+  plans to kick it's ass by ruthlessly removing lines of testing framework
+  code
 
 SYNOPSIS
   Testy.testing 'your code' do
-    test 'some behaviour' do |result|
+    test 'some behaviour' do |t|
       ultimate = Ultimate.new
-      result.check :name, :expect => 42, :actual => ultimate.answer
+      t.check :name, :expect => 42, :actual => ultimate.answer
     end
   end
+
+GIT
+  open http://github.com/ahoward/testy/tree/master
+  git clone git://github.com/ahoward/testy.git
 
 PRINCIPLES AND GOALS
   . it.should.not.merely.be.a.unit.testing.with.a.clever.dsl
@@ -40,7 +45,8 @@ PRINCIPLES AND GOALS
   . hi-jacking at_exit sucks ass
 
   . the exit status of running a test suite should indicate the degree of it's
-  failure state: the more failures the higher the exit status
+  failure state (testy returns the percent of failed tests using a non-zero
+  exit status)
 
   . sample code should easily be able to double as a test suite, including
   it's output
@@ -103,9 +109,9 @@ SAMPLES
     # testy will handle unexpected results and exceptions thrown in your code in
     # exactly the same way - by reporting on them in a beautiful fashion and
     # continuing to run other tests.  notice, however, that an unexpected result
-    # or raised exception will cause a non-zero exitstatus (equalling the number
-    # of failed tests) for the suite as a whole.  also note that previously
-    # accumulate expect/actual pairs are still reported on in the error report.
+    # or raised exception will cause a non-zero exitstatus (the percent of tests
+    # that failed) for the suite as a whole.  also note that previously
+    # accumulated expect/actual pairs are still reported on in the error report.
     #
       require 'testy'
     
@@ -127,7 +133,7 @@ SAMPLES
     
       end
 
-  ~ > ruby samples/b.rb #=> exitstatus=2
+  ~ > ruby samples/b.rb #=> exitstatus=100
 
     --- 
     the exception handling of testy: 
@@ -137,13 +143,17 @@ SAMPLES
             class: NoMethodError
             message: undefined method `method_that_does_not_exist' for [42]:Array
             backtrace: 
-            - samples/b.rb:18
-            - ./lib/testy.rb:67:in `call'
-            - ./lib/testy.rb:67:in `run'
+            - samples/b.rb:18:in `call'
+            - ./lib/testy.rb:130:in `run'
+            - ./lib/testy.rb:113:in `instance_eval'
+            - ./lib/testy.rb:113:in `run'
             - /opt/local/lib/ruby/site_ruby/1.8/orderedhash.rb:65:in `each'
             - /opt/local/lib/ruby/site_ruby/1.8/orderedhash.rb:65:in `each'
-            - ./lib/testy.rb:63:in `run'
-            - ./lib/testy.rb:91:in `testing'
+            - ./lib/testy.rb:108:in `run'
+            - ./lib/testy.rb:78:in `call'
+            - ./lib/testy.rb:78:in `context'
+            - ./lib/testy.rb:102:in `run'
+            - ./lib/testy.rb:167:in `testing'
             - samples/b.rb:10
           expect: 
             a: 42
@@ -157,4 +167,130 @@ SAMPLES
           actual: 
             a: 42
             b: 42.0
+
+
+  <========< samples/c.rb >========>
+
+  ~ > cat samples/c.rb
+
+    # in some cases you may not even want to make test assertions and simply
+    # provide example code which should run without error, with testy it's not
+    # only easy to do this but the commanline supports --list to see which samples
+    # can be run and running a single or multiple tests based on name or pattern.
+    # notice that, when no assertions are made using 'result.check' the output of
+    # the test becomes the expected *and* actual and is therefore shown in the
+    # output as yaml.  of course, if your samples have errors they are reported in
+    # the normal fashion and the tests will fail.
+    #
+    #
+      require 'testy'
+    
+      Testy.testing 'some samplz for you' do
+        test 'foo sample' do
+          list = 1,2
+          list.last + list.first
+        end
+    
+        test 'bar sample' do
+          list = 1,2
+          list.shift * list.pop
+        end
+    
+        test 'foobar sample' do
+          list = 1,2
+          eval(list.reverse.join) * 2
+        end
+      end
+    
+    # here are some examples of using the command line arguments on the above test
+    #
+    # cfp:~/src/git/testy > ruby samples/c.rb --list
+    # --- 
+    # - foo sample
+    # - bar sample
+    # - foobar sample
+    #
+    # cfp:~/src/git/testy > ruby samples/c.rb foobar
+    # --- 
+    # some samplz for you: 
+    #   foobar sample: 
+    #     success: 42
+    #
+    # cfp:~/src/git/testy > ruby samples/c.rb foo
+    # --- 
+    # some samplz for you: 
+    #   foo sample: 
+    #     success: 3
+    #   foobar sample: 
+    #     success: 42
+    #
+    # cfp:~/src/git/testy > ruby samples/c.rb bar
+    # --- 
+    # some samplz for you: 
+    #   bar sample: 
+    #     success: 2
+
+  ~ > ruby samples/c.rb #=> exitstatus=0
+
+    --- 
+    some samplz for you: 
+      foo sample: 
+        success: 3
+      bar sample: 
+        success: 2
+      foobar sample: 
+        success: 42
+
+
+  <========< samples/d.rb >========>
+
+  ~ > cat samples/d.rb
+
+    # of course testy includes smartly inherited contexts and context sensitive
+    # setup and teardown methods which stack as well.
+    #
+      require 'testy'
+    
+      Testy.testing 'your bitchin lib' do
+        context 'A' do
+          setup{ @list = [40] }
+    
+          test 'foo' do
+            @list << 2
+            @list.first + @list.last
+          end
+    
+          test 'bar' do |t|
+            t.check :list, @list, [40]
+          end
+    
+          context 'B' do
+            setup{ @list << 2 }
+            test(:bar){ @list.join.delete('0') }
+          end
+        end
+      end
+    
+    
+    # the context name is applied to the test name, so you can selectively run
+    # groups of tests from the command line
+    #
+    # cfp:~/src/git/testy > ruby -I lib samples/d.rb 'A - B'
+    # --- 
+    # your bitchin lib: 
+    #   A - B - bar: 
+    #       success: "42"
+
+  ~ > ruby samples/d.rb #=> exitstatus=0
+
+    --- 
+    your bitchin lib: 
+      A - foo: 
+        success: 42
+      A - bar: 
+        success: 
+          list: 
+          - 40
+      A - B - bar: 
+        success: "42"
 

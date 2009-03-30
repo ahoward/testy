@@ -1,2 +1,4 @@
-. add contexts
-. add setup/teardown
+. holy crap i need to re-factor before the code gets any fuglier!
+
+. make sure contexts stack
+. make sure contexts start out clean

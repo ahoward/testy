@@ -2,16 +2,21 @@ NAME
   testy.rb
 
 DESCRIPTION
-  a BDD testing framework for ruby that's mad at the world and plans to kick
-  it's ass in 80 freakin lines of code
+  a minimalist BDD testing framework for ruby that's mad at the world and
+  plans to kick it's ass by ruthlessly removing lines of testing framework
+  code
 
 SYNOPSIS
   Testy.testing 'your code' do
-    test 'some behaviour' do |result|
+    test 'some behaviour' do |t|
       ultimate = Ultimate.new
-      result.check :name, :expect => 42, :actual => ultimate.answer
+      t.check :name, :expect => 42, :actual => ultimate.answer
     end
   end
+
+GIT
+  open http://github.com/ahoward/testy/tree/master
+  git clone git://github.com/ahoward/testy.git
 
 PRINCIPLES AND GOALS
   . it.should.not.merely.be.a.unit.testing.with.a.clever.dsl
