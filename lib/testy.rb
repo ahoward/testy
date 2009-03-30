@@ -58,6 +58,10 @@ module Testy
       @tests[name.to_s] = block
     end
 
+    def size
+      @tests.size
+    end
+
     def list
       instance_eval(&@block) if @block
       tests.map{|kv| kv.first.to_s}
@@ -78,6 +82,7 @@ module Testy
             value = block.call(result)
             raise BadResult, name unless result.ok?
             value = result.actual.with_string_keys unless result.empty?
+            begin; value.to_yaml; rescue; value=true; end
             {'success' => value}
           rescue Object => e
             failures += 1
@@ -107,7 +112,9 @@ module Testy
       y test.list
     else
       failures = test.run(:selectors => selectors)
-      exit(failures)
+      size = test.size
+      pct_failed = [ ((failures/size.to_f)*100).to_i, 1 ].max
+      exit(pct_failed)
     end
   end
 end

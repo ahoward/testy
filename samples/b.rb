@@ -1,9 +1,9 @@
 # testy will handle unexpected results and exceptions thrown in your code in
 # exactly the same way - by reporting on them in a beautiful fashion and
 # continuing to run other tests.  notice, however, that an unexpected result
-# or raised exception will cause a non-zero exitstatus (equalling the number
-# of failed tests) for the suite as a whole.  also note that previously
-# accumulate expect/actual pairs are still reported on in the error report.
+# or raised exception will cause a non-zero exitstatus (the percent of tests
+# that failed) for the suite as a whole.  also note that previously
+# accumulated expect/actual pairs are still reported on in the error report.
 #
   require 'testy'
 
