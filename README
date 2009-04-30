@@ -3,7 +3,7 @@ NAME
 
 DESCRIPTION
   a minimalist BDD testing framework for ruby that's mad at the world and
-  plans to kick it's ass by ruthlessly removing lines of testing framework
+  plans to kick its ass by ruthlessly removing lines of testing framework
   code
 
 SYNOPSIS
@@ -44,12 +44,12 @@ PRINCIPLES AND GOALS
 
   . hi-jacking at_exit sucks ass
 
-  . the exit status of running a test suite should indicate the degree of it's
+  . the exit status of running a test suite should indicate the degree of its
   failure state (testy returns the percent of failed tests using a non-zero
   exit status)
 
   . sample code should easily be able to double as a test suite, including
-  it's output
+  its output
 
   . testing should improve your code and help your users, not make you want to
   kill yourself
